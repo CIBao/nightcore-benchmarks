@@ -4,8 +4,8 @@
 
 ```shell
 #下载nightcore-benchmark
-git clone https://github.com/ut-osa/nightcore-benchmarks.git
-#备用 git clone https://hub.fastgit.org/ut-osa/nightcore-benchmarks.git
+git clone https://github.com/CIBao/nightcore-benchmarks.git
+#备用 git clone https://hub.fastgit.org/CIBao/nightcore-benchmarks.git
 cd nightcore-benchmarks/experiments/socialnetwork_singlenode/
 
 
