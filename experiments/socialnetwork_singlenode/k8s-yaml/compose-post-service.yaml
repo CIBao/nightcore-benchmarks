@@ -1,0 +1,62 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: compose-post-service
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: compose-post-service
+  namespace: nightcore-sn
+spec:
+  ports:
+  - port: 8080
+  selector:
+    nightcore-project: nightcore-sn
+    app-name: compose-post-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: compose-post-service
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: compose-post-service
+  namespace: nightcore-sn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nightcore-project: nightcore-sn
+      app-name: compose-post-service
+  template:
+    metadata:
+      labels:
+        nightcore-project: nightcore-sn
+        app-name: compose-post-service
+      name: compose-post-service
+    spec:
+      containers:
+        - command:
+            - /tmp/nightcore/run_launcher
+            - ./build/src/ComposePostService/libComposePostService.so
+            - "2"
+          image: zjia/nightcore-socialnetwork:asplos-ae
+          name: compose-post-service
+          resources: {}
+          volumeMounts:
+            - mountPath: /DeathStarBench/socialNetwork/config/service-config.json
+              name: service-config
+            - mountPath: /tmp/nightcore
+              name: nightcore
+          workingDir: /DeathStarBench/socialNetwork
+      hostname: compose-post-service
+      restartPolicy: Always
+      volumes:
+        - name: service-config
+          hostPath:
+           path: /tmp/service-config.json
+           type: File
+        - name: nightcore
+          hostPath:
+           path:  /mnt/inmem/nightcore
+           type: Directory

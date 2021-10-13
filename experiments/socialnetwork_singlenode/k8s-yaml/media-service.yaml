@@ -1,0 +1,62 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: media-service
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: media-service
+  namespace: nightcore-sn
+spec:
+  ports:
+  - port: 8080
+  selector:
+    nightcore-project: nightcore-sn
+    app-name: media-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: media-service
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: media-service
+  namespace: nightcore-sn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nightcore-project: nightcore-sn
+      app-name: media-service
+  template:
+    metadata:
+      labels:
+        nightcore-project: nightcore-sn
+        app-name: media-service
+      name: media-service
+    spec:
+      containers:
+        - command:
+            - /tmp/nightcore/run_launcher
+            - ./build/src/MediaService/libMediaService.so
+            - "7"
+          image: zjia/nightcore-socialnetwork:asplos-ae
+          name: media-service
+          resources: {}
+          volumeMounts:
+            - mountPath: /DeathStarBench/socialNetwork/config/service-config.json
+              name: service-config
+            - mountPath: /tmp/nightcore
+              name: nightcore
+          workingDir: /DeathStarBench/socialNetwork
+      hostname: media-service
+      restartPolicy: Always
+      volumes:
+        - name: service-config
+          hostPath:
+           path: /tmp/service-config.json
+           type: File
+        - name: nightcore
+          hostPath:
+           path:  /mnt/inmem/nightcore
+           type: Directory

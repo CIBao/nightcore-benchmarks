@@ -1,0 +1,49 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: compose-post-redis
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: compose-post-redis
+  namespace: nightcore-sn
+spec:
+  ports:
+  - port: 6379
+  selector:
+    nightcore-project: nightcore-sn
+    app-name: compose-post-redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: compose-post-redis
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: compose-post-redis
+  namespace: nightcore-sn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nightcore-project: nightcore-sn
+      app-name: compose-post-redis
+  template:
+    metadata:
+      labels:
+        nightcore-project: nightcore-sn
+        app-name: compose-post-redis
+      name: compose-post-redis
+    spec:
+      containers:
+        - args:
+            - redis-server
+            - --save
+            - ""
+            - --io-threads
+            - "4"
+          image: redis:6.0.5
+          name: compose-post-redis
+          resources: {}
+      hostname: compose-post-redis
+      restartPolicy: Always

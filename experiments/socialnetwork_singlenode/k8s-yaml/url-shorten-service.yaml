@@ -1,0 +1,62 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: url-shorten-service
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: url-shorten-service
+  namespace: nightcore-sn
+spec:
+  ports:
+  - port: 8080
+  selector:
+    nightcore-project: nightcore-sn
+    app-name: url-shorten-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-shorten-service
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: url-shorten-service
+  namespace: nightcore-sn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nightcore-project: nightcore-sn
+      app-name: url-shorten-service
+  template:
+    metadata:
+      labels:
+        nightcore-project: nightcore-sn
+        app-name: url-shorten-service
+      name: url-shorten-service
+    spec:
+      containers:
+        - command:
+            - /tmp/nightcore/run_launcher
+            - ./build/src/UrlShortenService/libUrlShortenService.so
+            - "5"
+          image: zjia/nightcore-socialnetwork:asplos-ae
+          name: url-shorten-service
+          resources: {}
+          volumeMounts:
+            - mountPath: /DeathStarBench/socialNetwork/config/service-config.json
+              name: service-config
+            - mountPath: /tmp/nightcore
+              name: nightcore
+          workingDir: /DeathStarBench/socialNetwork
+      hostname: url-shorten-service
+      restartPolicy: Always
+      volumes:
+        - name: service-config
+          hostPath:
+           path: /tmp/service-config.json
+           type: File
+        - name: nightcore
+          hostPath:
+           path:  /mnt/inmem/nightcore
+           type: Directory

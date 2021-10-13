@@ -1,0 +1,68 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nightcore-engine
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: nightcore-engine
+  namespace: nightcore-sn
+spec:
+  ports:
+  - port: 8080
+  selector:
+    nightcore-project: nightcore-sn
+    app-name: nightcore-engine
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nightcore-engine
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: nightcore-engine
+  namespace: nightcore-sn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nightcore-project: nightcore-sn
+      app-name: nightcore-engine
+  template:
+    metadata:
+      labels:
+        nightcore-project: nightcore-sn
+        app-name: nightcore-engine
+      name: nightcore-engine
+    spec:
+      containers:
+        - command:
+            - /nightcore/engine
+            - --gateway_addr=nightcore-gateway.nightcore-sn.svc.cluster.local
+            - --root_path_for_ipc=/tmp/nightcore/ipc
+            - --func_config_file=/tmp/nightcore/func_config.json
+            - --num_io_workers=2
+            - --gateway_conn_per_worker=16
+            - --disable_monitor
+            - --instant_rps_p_norm=0.7
+          env:
+            - name: FAAS_CGROUP_FS_ROOT
+              value: /tmp/root_cgroupfs
+          image: zjia/nightcore:asplos-ae
+          name: nightcore-engine
+          resources: {}
+          volumeMounts:
+            - mountPath: /tmp/nightcore
+              name: nightcore
+            - mountPath: /tmp/root_cgroupfs
+              name: cgroup
+      restartPolicy: Always
+      volumes:
+        - name: nightcore
+          hostPath:
+           path: /mnt/inmem/nightcore
+           type: Directory
+        - name: cgroup
+          hostPath:
+           path:  /sys/fs/cgroup
+           type: Directory

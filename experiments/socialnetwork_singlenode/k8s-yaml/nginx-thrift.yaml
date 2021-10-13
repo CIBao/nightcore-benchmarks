@@ -1,0 +1,92 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-thrift
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: nginx-thrift
+  namespace: nightcore-sn
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 31234
+  selector:
+    nightcore-project: nightcore-sn
+    app-name: nginx-thrift
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-thrift
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: nginx-thrift
+  namespace: nightcore-sn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nightcore-project: nightcore-sn
+      app-name: nginx-thrift
+  template:
+    metadata:
+      labels:
+        nightcore-project: nightcore-sn
+        app-name: nginx-thrift
+      name: nginx-thrift
+    spec:
+      containers:
+      - image: zjia/openresty-thrift:xenial
+        name: nginx-thrift
+        ports:
+        - containerPort: 8080
+        resources: {}
+        volumeMounts:
+        - mountPath: /social-network-microservices/config/service-config.json
+          name: service-config
+        - mountPath: /usr/local/openresty/nginx/lua-scripts
+          name: lua-scripts
+        - mountPath: /usr/local/openresty/nginx/pages
+          name: pages
+        - mountPath: /usr/local/openresty/nginx/conf/nginx.conf
+          name: nginx-conf
+        - mountPath: /usr/local/openresty/nginx/jaeger-config.json
+          name: jaeger-config-json
+        - mountPath: /gen-lua
+          name: gen-lua
+        - mountPath: /usr/local/openresty/lualib/thrift
+          name: lua-thrift
+      hostname: nginx-thrift
+      restartPolicy: Always
+      volumes:
+      - name: service-config
+        hostPath:
+          path: /tmp/service-config.json
+          type: File
+      - name: lua-scripts
+        hostPath:
+          path: /tmp/socialNetwork/nginx-web-server/lua-scripts
+          type: Directory
+      - name: pages
+        hostPath:
+          path: /tmp/socialNetwork/nginx-web-server/pages
+          type: Directory
+      - name: nginx-conf
+        hostPath:
+          path: /tmp/socialNetwork/nginx-web-server/conf/nginx.conf
+          type: File
+      - name: jaeger-config-json
+        hostPath:
+          path: /tmp/socialNetwork/nginx-web-server/jaeger-config.json
+          type: File
+      - name: gen-lua
+        hostPath: 
+          path: /tmp/socialNetwork/gen-lua
+          type: Directory
+      - name: lua-thrift
+        hostPath:
+          path:  /tmp/socialNetwork/docker/openresty-thrift/lua-thrift
+          type: Directory

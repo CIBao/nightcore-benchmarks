@@ -1,0 +1,61 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: media-frontend
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: media-frontend
+  namespace: nightcore-sn
+spec:
+  type: NodePort
+  ports:
+  - port: 8081
+    targetPort: 8080
+  selector:
+    nightcore-project: nightcore-sn
+    app-name: media-frontend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: media-frontend
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: media-frontend
+  namespace: nightcore-sn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nightcore-project: nightcore-sn
+      app-name: media-frontend
+  template:
+    metadata:
+      labels:
+        nightcore-project: nightcore-sn
+        app-name: media-frontend
+      name: media-frontend
+    spec:
+      containers:
+        - image: zjia/media-frontend:xenial
+          name: media-frontend
+          ports:
+            - containerPort: 8080
+          resources: {}
+          volumeMounts:
+            - mountPath: /usr/local/openresty/nginx/lua-scripts
+              name: lua-scripts
+            - mountPath: /usr/local/openresty/nginx/conf/nginx.conf
+              name: nginx
+      hostname: media-frontend
+      restartPolicy: Always
+      volumes:
+        - name: lua-scripts
+          hostPath:
+           path: /tmp/socialNetwork/media-frontend/lua-scripts
+           type: Directory
+        - name: nginx
+          hostPath:
+           path:  /tmp/socialNetwork/media-frontend/conf/nginx.conf
+           type: File

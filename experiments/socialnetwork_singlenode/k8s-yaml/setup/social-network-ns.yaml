@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nightcore-sn
+  labels:
+    death-star-project: nightcore-sn

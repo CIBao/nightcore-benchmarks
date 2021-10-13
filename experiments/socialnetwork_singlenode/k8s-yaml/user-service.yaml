@@ -1,0 +1,62 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: user-service
+  namespace: nightcore-sn
+spec:
+  ports:
+  - port: 8080
+  selector:
+    nightcore-project: nightcore-sn
+    app-name: user-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: user-service
+  namespace: nightcore-sn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nightcore-project: nightcore-sn
+      app-name: user-service
+  template:
+    metadata:
+      labels:
+        nightcore-project: nightcore-sn
+        app-name: user-service
+      name: user-service
+    spec:
+      containers:
+        - command:
+            - /tmp/nightcore/run_launcher
+            - ./build/src/UserService/libUserService.so
+            - "6"
+          image: zjia/nightcore-socialnetwork:asplos-ae
+          name: user-service
+          resources: {}
+          volumeMounts:
+            - mountPath: /DeathStarBench/socialNetwork/config/service-config.json
+              name: service-config
+            - mountPath: /tmp/nightcore
+              name: nightcore
+          workingDir: /DeathStarBench/socialNetwork
+      hostname: user-service
+      restartPolicy: Always
+      volumes:
+        - name: service-config
+          hostPath:
+           path: /tmp/service-config.json
+           type: File
+        - name: nightcore
+          hostPath:
+           path:  /mnt/inmem/nightcore
+           type: Directory

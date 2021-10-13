@@ -1,0 +1,47 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: url-shorten-memcached
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: url-shorten-memcached
+  namespace: nightcore-sn
+spec:
+  ports:
+  - port: 11211
+  selector:
+    nightcore-project: nightcore-sn
+    app-name: url-shorten-memcached
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-shorten-memcached
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: url-shorten-memcached
+  namespace: nightcore-sn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nightcore-project: nightcore-sn
+      app-name: url-shorten-memcached
+  template:
+    metadata:
+      labels:
+        nightcore-project: nightcore-sn
+        app-name: url-shorten-memcached
+      name: url-shorten-memcached
+    spec:
+      containers:
+        - args:
+            - memcached
+            - -m
+            - "4096"
+          image: memcached:1.5.22
+          name: url-shorten-memcached
+          resources: {}
+      hostname: url-shorten-memcached
+      restartPolicy: Always

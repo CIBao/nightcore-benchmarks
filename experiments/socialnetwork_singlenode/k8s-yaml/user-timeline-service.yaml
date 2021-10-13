@@ -1,0 +1,62 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-timeline-service
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: user-timeline-service
+  namespace: nightcore-sn
+spec:
+  ports:
+  - port: 8080
+  selector:
+    nightcore-project: nightcore-sn
+    app-name: user-timeline-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-timeline-service
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: user-timeline-service
+  namespace: nightcore-sn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nightcore-project: nightcore-sn
+      app-name: user-timeline-service
+  template:
+    metadata:
+      labels:
+        nightcore-project: nightcore-sn
+        app-name: user-timeline-service
+      name: user-timeline-service
+    spec:
+      containers:
+        - command:
+            - /tmp/nightcore/run_launcher
+            - ./build/src/UserTimelineService/libUserTimelineService.so
+            - "4"
+          image: zjia/nightcore-socialnetwork:asplos-ae
+          name: user-timeline-service
+          resources: {}
+          volumeMounts:
+            - mountPath: /DeathStarBench/socialNetwork/config/service-config.json
+              name: service-config
+            - mountPath: /tmp/nightcore
+              name: nightcore
+          workingDir: /DeathStarBench/socialNetwork
+      hostname: user-timeline-service
+      restartPolicy: Always
+      volumes:
+        - name: service-config
+          hostPath:
+           path: /tmp/service-config.json
+           type: File
+        - name: nightcore
+          hostPath:
+           path:  /mnt/inmem/nightcore
+           type: Directory

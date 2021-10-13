@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: socialnetwork-mongodb
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: socialnetwork-mongodb
+  namespace: nightcore-sn
+spec:
+  ports:
+  - port: 27017
+  selector:
+    nightcore-project: nightcore-sn
+    app-name: socialnetwork-mongodb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: socialnetwork-mongodb
+  labels:
+    nightcore-project: nightcore-sn
+    app-name: socialnetwork-mongodb
+  namespace: nightcore-sn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nightcore-project: nightcore-sn
+      app-name: socialnetwork-mongodb
+  template:
+    metadata:
+      labels:
+        nightcore-project: nightcore-sn
+        app-name: socialnetwork-mongodb
+      name: socialnetwork-mongodb
+    spec:
+      containers:
+        - args:
+            - mongod
+            - --nojournal
+          image: mongo:4.2.10
+          name: socialnetwork-mongodb
+          resources: {}
+          volumeMounts:
+            - mountPath: /data/db
+              name: db
+      hostname: socialnetwork-mongodb
+      restartPolicy: Always
+      volumes:
+        - name: db
+          hostPath:
+           path: /home/k8s/db
+           type: Directory
