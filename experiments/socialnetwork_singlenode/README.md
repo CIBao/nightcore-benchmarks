@@ -32,7 +32,8 @@ kubectl apply -f backend/
 kubectl apply -f .
 
 #初始化
-python3 init_social_graph.pyhttp://localhost:31234 socfb-Reed98.mtx #(其中端口为nginx-thrift的svc nodeport)
+#
+python3 ~/init_social_graph.py  10.106.95.111 ~/socfb-Reed98.mtx #(其中ip为nginx-thrift的svc ClusterIP )
 
 
 #wrk测试
