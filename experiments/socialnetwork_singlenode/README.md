@@ -31,13 +31,14 @@ kubectl apply -f  setup/
 kubectl apply -f backend/
 kubectl apply -f .
 
-#wrk测试
-cd /home/k8s/exper/ywq/nightcore-benchmarks/misc/wrk2/
-make
-
 #初始化
 python3 init_social_graph.pyhttp://localhost:31234 socfb-Reed98.mtx #(其中端口为nginx-thrift的svc nodeport)
 
+
+#wrk测试
+cd ../../misc/wrk2/
+make
+./wrk -t 4 -c 48 -d 150 -L -U  -s ~/compose-post.lua  http://localhost:8080 -R 1000
 
 #退出
 kubectl delete namespace nightcore-sn
