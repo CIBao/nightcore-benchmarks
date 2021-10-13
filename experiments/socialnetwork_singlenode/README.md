@@ -9,7 +9,7 @@ git clone https://github.com/CIBao/nightcore-benchmarks.git
 cd nightcore-benchmarks/experiments/socialnetwork_singlenode/
 
 
-
+chmod +x ./init.sh
 ./init.sh
 
 #根据docker-compose-write编写k8s-yaml
