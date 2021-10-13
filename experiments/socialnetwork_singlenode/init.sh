@@ -13,11 +13,11 @@ cp ./run_launcher /tmp/run_launcher
 sudo cp /tmp/run_launcher /mnt/inmem/nightcore/run_launcher
 sudo cp /tmp/nightcore_config.json /mnt/inmem/nightcore/func_config.json
 
-cp -r ~/tmp/nightcore-benchmarks/workloads/DeathStarBench/socialNetwork/nginx-web-server    /tmp/socialNetwork
-cp -r ~/tmp/nightcore-benchmarks/workloads/DeathStarBench/socialNetwork/media-frontend     /tmp/socialNetwork
-cp -r ~/tmp/nightcore-benchmarks/workloads/DeathStarBench/socialNetwork/gen-lua             /tmp/socialNetwork
-cp -r ~/tmp/nightcore-benchmarks/workloads/DeathStarBench/socialNetwork/docker              /tmp/socialNetwork
+cp -r ../../workloads/DeathStarBench/socialNetwork/nginx-web-server    /tmp/socialNetwork
+cp -r ../../workloads/DeathStarBench/socialNetwork/media-frontend     /tmp/socialNetwork
+cp -r ../../workloads/DeathStarBench/socialNetwork/gen-lua             /tmp/socialNetwork
+cp -r ../../workloads/DeathStarBench/socialNetwork/docker              /tmp/socialNetwork
 
-cp  ~/tmp/nightcore-benchmarks/workloads/DeathStarBench/socialNetwork/scripts/init_social_graph.py                  ~
-cp  ~/tmp/nightcore-benchmarks/workloads/DeathStarBench/socialNetwork/wrk2_scripts/compose-post.lua           ~
-cp  ~/tmp/nightcore-benchmarks/workloads/DeathStarBench/socialNetwork/datasets/social-graph/socfb-Reed98/socfb-Reed98.mtx    ~
+cp  ../../workloads/DeathStarBench/socialNetwork/scripts/init_social_graph.py                  ~
+cp  ../../workloads/DeathStarBench/socialNetwork/wrk2_scripts/compose-post.lua           ~
+cp  ../../workloads/DeathStarBench/socialNetwork/datasets/social-graph/socfb-Reed98/socfb-Reed98.mtx    ~
