@@ -10,36 +10,7 @@ cd nightcore-benchmarks/experiments/socialnetwork_singlenode/
 
 
 
-#设置配置文件
-sudo rm -rf /tmp/socialNetwork
-mkdir -p /tmp/socialNetwork
-sudo rm -rf /mnt/inmem/db
-sudo mkdir -p /mnt/inmem/db
-sudo rm -rf /mnt/inmem/nightcore
-sudo mkdir -p /mnt/inmem/nightcore
-sudo mkdir -p /mnt/inmem/nightcore/output /mnt/inmem/nightcore/ipc
-
-cp ./nightcore_config.json /tmp/nightcore_config.json
-
-#修改 service-config.json
-#将“addr”添加 .nightcore-sn.svc.cluster.local
-cp ./service-config.json /tmp/service-config.json
-
-cp ./run_launcher /tmp/run_launcher
-sudo cp /tmp/run_launcher /mnt/inmem/nightcore/run_launcher
-sudo cp /tmp/nightcore_config.json /mnt/inmem/nightcore/func_config.json
-
-#修改Nginx-k8s.conf和media-front/nginx.conf
-#将resolver改为10.96.0.10(kube-dns.kube-system.svc.cluster.local)
-
-cp -r ../../workloads/DeathStarBench/socialNetwork/nginx-web-server    /tmp/socialNetwork
-cp -r ../../workloads/DeathStarBench/socialNetwork/media-frontend     /tmp/socialNetwork
-cp -r ../../workloads/DeathStarBench/socialNetwork/gen-lua             /tmp/socialNetwork
-cp -r ../../workloads/DeathStarBench/socialNetwork/docker              /tmp/socialNetwork
-
-cp  ../../workloads/DeathStarBench/socialNetwork/scripts/init_social_graph.py                  ~
-cp  ../../workloads/DeathStarBench/socialNetwork/wrk2_scripts/compose-post.lua           ~
-cp  ../../workloads/DeathStarBench/socialNetwork/datasets/social-graph/socfb-Reed98/socfb-Reed98.mtx    ~
+./init.sh
 
 #根据docker-compose-write编写k8s-yaml
 #可以利用kompose convert生成yaml，作为参考
